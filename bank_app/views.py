@@ -3,6 +3,8 @@ from django.views.generic import TemplateView, CreateView, ListView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from bank_app.models import AccountTransaction
+
 
 class IndexView(TemplateView):
     template_name = 'index.html'
@@ -15,10 +17,18 @@ class CreateUserView(CreateView):
 
 
 class AccountView(ListView):
-    model = User
+    model = AccountTransaction
     template_name = 'account.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(AccountView, self).get_context_data(**kwargs)
-        context['user_pk']= self.request.user.pk
+    def get_queryset(self):
+        return AccountTransaction.objects.filter(user=self.request.user).filter(trans_time__lte=datetime.datetime.today(), trans_time__gt=datetime.datetime.today()-datetime.timedelta(days=30))
+
+    def get_context_data(self):
+        context = super().get_context_data()
+        balance = 0
+        trans_list = AccountTransaction.objects.filter(user=self.request.user)
+
+
+
+        context['balance']= balance
         return context

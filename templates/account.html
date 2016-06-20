@@ -1,5 +1,18 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Welcome to your account. Put in some money! Your user pk is {{ user_pk }}</h1>
+  <h3>Welcome {{ request.user.username }}. (Account number: 05274{{ request.user.pk}})
+  <h1>Your current balance is: ${{ balance }} </h1>
+
+
+
+
+  
 {% endblock %}
+
+
+<!-- needs to include:
+ current balance.
+ list of debits and credits from past 30 days
+
+click on any transaction to see details -->
