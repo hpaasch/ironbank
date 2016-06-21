@@ -13,5 +13,6 @@ urlpatterns = [
     url(r'^register/$', views.CreateUserView.as_view(), name='create_user_view'),
     url(r'^accounts/profile/$', login_required(views.AccountView.as_view()), name='account_view'),
     url(r'^detail/(?P<pk>\d+)/$', login_required(views.TransDetailView.as_view()), name='detail_view'),
+    url(r'^transaction/$', views.CreateTransView.as_view(), name='create_trans_view'),
 
 ]
