@@ -86,11 +86,11 @@ class MakeTransferView(CreateTransView):
         trans = form.save(commit=False)  # this half saves it
         trans.customer = self.request.user  # this attaches the user in the DB
         recipient = User.objects.get(id=trans.trans_note)
-        if trans.trans_type == 'Debit':
-            temp_balance = balance(self)
-            if temp_balance >= trans.trans_amount:
-                return super().form_valid(form)
-            else:
-                return redirect('overdraft_view')
-        AccountTransaction.objects.create(customer=recipient, trans_amount=trans.trans_amount, trans_type='Credit', trans_note='')
+        temp_balance = balance(self)
+        if temp_balance >= trans.trans_amount:
+            return super().form_valid(form)
+        else:
+            return redirect('overdraft_view')
+        AccountTransaction.objects.create(customer=recipient, trans_amount=trans.trans_amount,
+            trans_type='Credit', trans_note='')
         return super().form_valid(form)
