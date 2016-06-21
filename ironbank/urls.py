@@ -24,6 +24,6 @@ urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='index_view'),
     url(r'^register/$', views.CreateUserView.as_view(), name='create_user_view'),
     url(r'^accounts/profile/$', views.AccountView.as_view(), name='account_view'),
-    url(r'^detail/$', views.TransDetailView.as_view(), name='detail_view'),
-    
+    url(r'^detail/(?P<trans>\d+)$', views.TransDetailView.as_view(), name='detail_view'),
+
 ]
