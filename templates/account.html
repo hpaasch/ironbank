@@ -11,24 +11,11 @@
     <tbody>
       {% for trans in object_list %}
       <tr>
-        <td>${{ trans.trans_amount }}</td>
-        {# <td><a href="{% url 'detail_view' %}">${{ trans.trans_amount }}</a></td>#}
+        <td><a href="{% url 'detail_view' trans.pk %}">${{ trans.trans_amount }}</a></td>
         <td>{{ trans.pk }}
         <td>{{ trans.trans_type }}</td>
       </tr>
       {% endfor %}
     </tbody>
-
-
   </table>
-
-
-
 {% endblock %}
-
-
-<!-- needs to include:
- current balance.
- list of debits and credits from past 30 days
-
-click on any transaction to see details -->

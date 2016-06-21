@@ -43,3 +43,5 @@ class TransDetailView(ListView):
 
     def get_queryset(self):
         return AccountTransaction.objects.filter(id=self.kwargs['pk'])
+
+#  Dealing with the form is the time to block an overdraw, so will deal with that Tuesday.
