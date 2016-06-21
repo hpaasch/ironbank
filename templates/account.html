@@ -1,7 +1,13 @@
 {% extends "base.html" %}
+{% block alert %}
+  <div id="alert">
+  <h1>{{ alert }}</h1>
+  </div>
+{% endblock %}
+
 
 {% block content %}
-  <h3>Welcome {{ request.user.username }}. (Account number: 05274{{ request.user.pk}})
+  <h3>Account owner: {{ request.user.username }}. Account number: 05274{{ request.user.pk}}
   <h1>Your current balance is: ${{ balance }} </h1>
   <h3>These are your transactions from the past 30 days. Click on each for more info.</h3>
   <table class='table table-hover' id='public'>

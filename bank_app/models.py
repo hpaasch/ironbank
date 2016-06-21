@@ -12,3 +12,6 @@ class AccountTransaction(models.Model):
 
     def __str__(self):
         return self.trans_note
+
+    class Meta:
+        ordering = ['-trans_time']

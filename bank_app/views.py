@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import redirect
+from django.http import HttpResponse
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView, CreateView, ListView, RedirectView, DetailView
 from django.contrib.auth.forms import UserCreationForm
@@ -42,18 +43,6 @@ class AccountView(ListView):
         return context
 
 
-        # context = super().get_context_data(**kwargs)
-        # balance = 0
-        # trans_list = AccountTransaction.objects.filter(customer__username=self.request.user)
-        # for trans in trans_list:
-        #     if trans.trans_type == 'Credit':
-        #         balance += trans.trans_amount
-        #     elif trans.trans_type == 'Debit':
-        #         balance -= trans.trans_amount
-        # context['balance']= balance
-        # return context
-
-
 class TransDetailView(DetailView):
     model = AccountTransaction
 
@@ -69,5 +58,39 @@ class CreateTransView(CreateView):
     def form_valid(self, form):
         trans = form.save(commit=False)  # this half saves it
         trans.customer = self.request.user  # this attaches the user in the DB
-        # if trans.trans_type == 'Debit' and 'balance' <= 0:
-        return super().form_valid(form)  # this fully creates the transaction
+        if trans.trans_type == 'Debit':
+            temp_balance = balance(self)
+            if temp_balance >= trans.trans_amount:
+                return super().form_valid(form)
+            else:
+                return redirect('overdraft_view')
+                # return self.form_invalid(form)
+        return super().form_valid(form)
+
+        # return super().form_valid(form)  # this fully creates the transaction
+
+class OverdraftView(AccountView):
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context ['alert'] = 'You tried to withdraw more than you have.'
+        return context
+
+
+class MakeTransferView(CreateTransView):
+    model = AccountTransaction
+    fields = ['trans_amount', 'trans_note']
+    trans_type = 'Debit'
+
+    def form_valid(self, form):
+        trans = form.save(commit=False)  # this half saves it
+        trans.customer = self.request.user  # this attaches the user in the DB
+        recipient = User.objects.get(id=trans.trans_note)
+        if trans.trans_type == 'Debit':
+            temp_balance = balance(self)
+            if temp_balance >= trans.trans_amount:
+                return super().form_valid(form)
+            else:
+                return redirect('overdraft_view')
+        AccountTransaction.objects.create(customer=recipient, trans_amount=trans.trans_amount, trans_type='Credit', trans_note='')
+        return super().form_valid(form)

@@ -5,7 +5,10 @@
   <head>
     <meta charset="utf-8">
     <title>BankTown</title>
+
     <link rel="stylesheet" href="{% static "bank_app/css/bootstrap.css" %}" media="screen" title="bootstrap" charset="utf-8">
+    <link rel="stylesheet" href="{% static "bank_app/css/main.css" %}" media="" title="hep_css" charset="">
+
   </head>
   <body>
     <nav class="navbar navbar-inverse navbar-static-top">
@@ -13,8 +16,8 @@
         {% if request.user.is_authenticated %}
           <a class="btn btn-sm" href="{% url 'logout' %}?next=/">Logout</a>
           <a class="btn btn-sm" href="{% url 'account_view' %}">My Account</a>
-          <a class="btn btn-sm" href="{% url 'create_trans_view' %}">Make a transaction</a>
-
+          <a class="btn btn-sm" href="{% url 'create_trans_view' %}">Make a Deposit or Withdrawal</a>
+          <a class="btn btn-sm" href="{% url 'make_transfer_view' %}">Transfer money</a>
         {% else %}
           <a class="btn btn-sm" href="{% url 'index_view' %}">Homepage</a>
           <a class="btn btn-sm" href="{% url 'create_user_view' %}">Create Account</a>
@@ -23,6 +26,8 @@
       </div>
     </nav>
     <div class="container">
+      {% block alert %}
+      {% endblock %}
       {% block content %}
         No content provided
       {% endblock %}
