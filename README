@@ -1,0 +1,14 @@
+
+Implements Normal Mode of assignment. Leaving the ability to block an overdraw until
+Tuesday's work, because that would dealt with during the form handling, which is beyond
+the scope of tonight's work.
+
+This is a basic bank register application in which the customer creates an account with
+secure access, and enters credit and debit transactions. The account view shows the
+account number, summary of transactions from the past 30 days and an overall current
+balance. The customer then can click on a transaction to see more. The additional
+details include a timestamp and a note.
+
+A non-customer can either make an account or not use the application.
+
+For tonight's Part One, transactions were entered through the admin interface.
