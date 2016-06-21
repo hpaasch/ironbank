@@ -38,10 +38,8 @@ class AccountView(ListView):
         return context
 
 
-class TransDetailView(RedirectView):
+class TransDetailView(ListView):
     template_name = 'detail_view.html'
 
-    def get_context_data(self, **kwargs):
-        trans_id = self.kwargs.get('trans', None)
-        transaction = AccountTransaction.objects.get(id=trans_id)
-        return super(TransDetailView, self).get(request, args, **kwargs)
+    def get_queryset(self):
+        return AccountTransaction.objects.filter(id=self.kwargs['pk'])

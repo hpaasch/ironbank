@@ -6,11 +6,14 @@
   <h3>These are your transactions from the past 30 days. Click on each for more info.</h3>
   <table class='table table-hover' id='public'>
     <th>Amount</th>
+    <th>Transaction ID</th>
     <th>Debit/Credit</th>
     <tbody>
       {% for trans in object_list %}
       <tr>
-        <td><a href="{% url 'detail_view' %}">${{ trans.trans_amount }}</td>
+        <td>${{ trans.trans_amount }}</td>
+        {# <td><a href="{% url 'detail_view' %}">${{ trans.trans_amount }}</a></td>#}
+        <td>{{ trans.pk }}
         <td>{{ trans.trans_type }}</td>
       </tr>
       {% endfor %}
