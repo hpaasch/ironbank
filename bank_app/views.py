@@ -21,14 +21,24 @@ class AccountView(ListView):
     template_name = 'account.html'
 
     def get_queryset(self):
-        return AccountTransaction.objects.filter(user=self.request.user).filter(trans_time__lte=datetime.datetime.today(), trans_time__gt=datetime.datetime.today()-datetime.timedelta(days=30))
+        return AccountTransaction.objects.filter(customer__username=self.request.user)
+        #.filter(trans_time__lte=datetime.datetime.today(), trans_time__gt=datetime.datetime.today()-datetime.timedelta(days=30))
 
-    def get_context_data(self):
-        context = super().get_context_data()
+    def get_context_data(self, **kwargs):
+        context = super(AccountView, self).get_context_data(**kwargs)
         balance = 0
-        trans_list = AccountTransaction.objects.filter(user=self.request.user)
-
-
-
+        trans_list = AccountTransaction.objects.filter(customer__username=self.request.user)
+        for trans in trans_list:
+            if AccountTransaction.trans_type == 'credit':
+                balance += trans_amount
+            elif AccountTransaction.trans_type == 'debit':
+                balance -= trans_amount
         context['balance']= balance
         return context
+
+
+class TransDetailView(ListView):
+    template_name = 'detail_view.html'
+
+    def get_queryset(self):
+        return AccountTransaction.objects.filter(customer__username=self.request.user)
