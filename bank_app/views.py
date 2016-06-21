@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import TemplateView, CreateView, ListView, RedirectView
+from django.views.generic import TemplateView, CreateView, ListView, RedirectView, DetailView
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 import datetime
@@ -26,7 +26,7 @@ class AccountView(ListView):
         trans_time__gt=datetime.datetime.today()-datetime.timedelta(days=30))
 
     def get_context_data(self, **kwargs):
-        context = super(AccountView, self).get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         balance = 0
         trans_list = AccountTransaction.objects.filter(customer__username=self.request.user)
         for trans in trans_list:
@@ -38,10 +38,8 @@ class AccountView(ListView):
         return context
 
 
-class TransDetailView(ListView):
-    template_name = 'detail_view.html'
+class TransDetailView(DetailView):
+    model = AccountTransaction
 
     def get_queryset(self):
-        return AccountTransaction.objects.filter(id=self.kwargs['pk'])
-
-#  Dealing with the form is the time to block an overdraw, so will deal with that Tuesday.
+        return AccountTransaction.objects.filter(id=self.kwargs['pk'])  # what is this id syntax?
