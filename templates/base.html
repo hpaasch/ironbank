@@ -16,11 +16,11 @@
         {% if request.user.is_authenticated %}
           <a class="btn btn-sm" href="{% url 'logout' %}?next=/">Logout</a>
           <a class="btn btn-sm" href="{% url 'account_view' %}">My Account</a>
-          <a class="btn btn-sm" href="{% url 'create_trans_view' %}">Make a Deposit or Withdrawal</a>
-          <a class="btn btn-sm" href="{% url 'make_transfer_view' %}">Transfer money</a>
+          <a class="btn btn-sm" href="{% url 'transaction_create_view' %}">Make a Deposit or Withdrawal</a>
+          <a class="btn btn-sm" href="{% url 'transfer_create_view' %}">Transfer money</a>
         {% else %}
           <a class="btn btn-sm" href="{% url 'index_view' %}">Homepage</a>
-          <a class="btn btn-sm" href="{% url 'create_user_view' %}">Create Account</a>
+          <a class="btn btn-sm" href="{% url 'user_create_view' %}">Create Account</a>
           <a class="btn btn-sm" href="{% url 'login' %}">Sign In</a>
         {% endif %}
       </div>

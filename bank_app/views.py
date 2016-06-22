@@ -23,10 +23,10 @@ class IndexView(TemplateView):
     template_name = 'index.html'
 
 
-class CreateUserView(CreateView):
+class UserCreateView(CreateView):
     model = User
     form_class = UserCreationForm
-    success_url = "/login/"
+    success_url = reverse_lazy('login')  # maybe hard-coded URL pattern would be OK, given it's a Django thing
 
 
 class AccountView(ListView):
@@ -43,14 +43,14 @@ class AccountView(ListView):
         return context
 
 
-class TransDetailView(DetailView):
+class TransactionDetailView(DetailView):
     model = AccountTransaction
 
     def get_queryset(self):
         return AccountTransaction.objects.filter(id=self.kwargs['pk']).filter(customer=self.request.user)  # what is this id syntax?
 
 
-class CreateTransView(CreateView):
+class TransactionCreateView(CreateView):
     model = AccountTransaction
     fields = ['trans_amount', 'trans_type', 'trans_note']
     success_url = reverse_lazy('account_view')  # better than /accounts/profile
@@ -69,7 +69,7 @@ class CreateTransView(CreateView):
 
         # return super().form_valid(form)  # this fully creates the transaction
 
-class OverdraftView(AccountView):
+class OverdraftView(AccountView):  # probably kill this whole function
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -77,10 +77,10 @@ class OverdraftView(AccountView):
         return context
 
 
-class MakeTransferView(CreateTransView):
+class TransferCreateView(CreateView):
     model = AccountTransaction
     fields = ['trans_amount', 'trans_note']
-    # trans_type = 'Debit'
+    success_url = reverse_lazy('account_view')
 
     def form_valid(self, form):
         trans = form.save(commit=False)  # this half saves it
