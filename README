@@ -12,8 +12,9 @@ julie/safepass with acct# 10
 selah/safepass with acct# 11
 bob/safepass with acct# 12
 jim/safepass with acct# 13
+sam/safepass with acct# 14
 
-Refactoring note: The Views file is 15 lines shorter than it was when I was
+Refactoring note: The Views file is 15 lines shorter than it was when I
 "finished" on Tuesday.
 
 

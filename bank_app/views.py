@@ -68,7 +68,6 @@ class TransactionCreateView(CreateView):
 class TransferCreateView(CreateView):
     model = AccountTransaction
     fields = ['trans_amount', 'trans_note']
-    # labels = [('trans_amount', 'Amount'), ('trans_note', 'Transfer to Acct No.:')]
     success_url = reverse_lazy('account_view')
 
     def form_valid(self, form):
