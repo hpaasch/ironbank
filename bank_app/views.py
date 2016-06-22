@@ -34,8 +34,8 @@ class AccountView(ListView):
     template_name = 'account.html'
 
     def get_queryset(self):
-        return AccountTransaction.objects.filter(customer__username=self.request.user).filter(trans_time__lte=datetime.datetime.today(),
-        trans_time__gt=datetime.datetime.today()-datetime.timedelta(days=30))
+        thirty_days = datetime.datetime.now() + datetime.timedelta(days=-30)
+        return AccountTransaction.objects.filter(customer__username=self.request.user).filter(date__gt=thirty_days)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -56,25 +56,13 @@ class TransactionCreateView(CreateView):
     success_url = reverse_lazy('account_view')  # better than /accounts/profile
 
     def form_valid(self, form):
-        trans = form.save(commit=False)  # this half saves it
-        trans.customer = self.request.user  # this attaches the user in the DB
+        trans = form.save(commit=False)  #  half saves it
+        trans.customer = self.request.user  #  attaches the user in the DB
         if trans.trans_type == 'Debit':
-            temp_balance = balance(self)
-            if temp_balance >= trans.trans_amount:
-                return super().form_valid(form)
-            else:
-                return redirect('overdraft_view')
-                # return self.form_invalid(form)
-        return super().form_valid(form)
-
-        # return super().form_valid(form)  # this fully creates the transaction
-
-class OverdraftView(AccountView):  # probably kill this whole function
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context ['alert'] = 'You tried to withdraw more than you have.'
-        return context
+            if balance(self) < trans.trans_amount:
+                form.add_error('trans_amount', 'Transaction failed: You do not have enough in your account to cover this amount')  # field affected, msg to give
+                return self.form_invalid(form)
+        return super().form_valid(form)  #  fully saves and creates the transaction
 
 
 class TransferCreateView(CreateView):
@@ -86,9 +74,8 @@ class TransferCreateView(CreateView):
         trans = form.save(commit=False)  # this half saves it
         trans.customer = self.request.user  # this attaches the user in the DB
         recipient = User.objects.get(id=trans.trans_note)
-        temp_balance = balance(self)
-        if temp_balance >= trans.trans_amount:
-            AccountTransaction.objects.create(customer=recipient, trans_amount=trans.trans_amount, trans_type='Credit', trans_note='')
-            return super().form_valid(form)
-        else:
-            return redirect('overdraft_view')
+        if balance(self) < trans.trans_amount:
+            form.add_error('trans_amount', 'Transaction failed: You do not have enough in your account to cover this amount')  # field affected, msg to give
+            return self.form_invalid(form)
+        AccountTransaction.objects.create(customer=recipient, trans_amount=trans.trans_amount, trans_type='Credit', trans_note='')
+        return super().form_valid(form)  #  fully saves and creates the transaction

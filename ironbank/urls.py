@@ -14,7 +14,6 @@ urlpatterns = [
     url(r'^accounts/profile/$', login_required(views.AccountView.as_view()), name='account_view'),
     url(r'^detail/(?P<pk>\d+)/$', login_required(views.TransactionDetailView.as_view()), name='transaction_detail_view'),
     url(r'^transaction/$', views.TransactionCreateView.as_view(), name='transaction_create_view'),
-    url(r'^overdraft/$', views.OverdraftView.as_view(), name='overdraft_view'),  # probably kill this
     url(r'^transfer/$', views.TransferCreateView.as_view(), name='transfer_create_view'),
 
 ]
