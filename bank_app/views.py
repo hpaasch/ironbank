@@ -80,7 +80,7 @@ class OverdraftView(AccountView):
 class MakeTransferView(CreateTransView):
     model = AccountTransaction
     fields = ['trans_amount', 'trans_note']
-    trans_type = 'Debit'
+    # trans_type = 'Debit'
 
     def form_valid(self, form):
         trans = form.save(commit=False)  # this half saves it
@@ -88,9 +88,7 @@ class MakeTransferView(CreateTransView):
         recipient = User.objects.get(id=trans.trans_note)
         temp_balance = balance(self)
         if temp_balance >= trans.trans_amount:
+            AccountTransaction.objects.create(customer=recipient, trans_amount=trans.trans_amount, trans_type='Credit', trans_note='')
             return super().form_valid(form)
         else:
             return redirect('overdraft_view')
-        AccountTransaction.objects.create(customer=recipient, trans_amount=trans.trans_amount,
-            trans_type='Credit', trans_note='')
-        return super().form_valid(form)
