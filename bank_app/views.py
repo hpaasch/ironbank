@@ -35,7 +35,7 @@ class AccountView(ListView):
 
     def get_queryset(self):
         thirty_days = datetime.datetime.now() + datetime.timedelta(days=-30)
-        return AccountTransaction.objects.filter(customer__username=self.request.user).filter(date__gt=thirty_days)
+        return AccountTransaction.objects.filter(customer__username=self.request.user).filter(trans_time__gt=thirty_days)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -68,6 +68,7 @@ class TransactionCreateView(CreateView):
 class TransferCreateView(CreateView):
     model = AccountTransaction
     fields = ['trans_amount', 'trans_note']
+    # labels = [('trans_amount', 'Amount'), ('trans_note', 'Transfer to Acct No.:')]
     success_url = reverse_lazy('account_view')
 
     def form_valid(self, form):

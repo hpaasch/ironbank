@@ -1,11 +1,20 @@
-Updated note:
+Updated notes:
 
 This banking app now allows a customer to enter their own transactions for credits,
 debits or transfers to another customer.
 
-Account activity exists for:
-julie/safepass with acct# 12
+The app blocks the customer from making an overdraw, alerting them with an error
+note added to the form.
+
+To make a transfer to another customer, enter the receiving customer's acct#
+in the "Trans note" field. Account activity exists for:
+julie/safepass with acct# 10
 selah/safepass with acct# 11
+bob/safepass with acct# 12
+jim/safepass with acct# 13
+
+Refactoring note: The Views file is 15 lines shorter than it was when I was
+"finished" on Tuesday.
 
 
 --------------------
