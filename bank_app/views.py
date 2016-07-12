@@ -8,15 +8,15 @@ import datetime
 
 from bank_app.models import AccountTransaction
 
-def balance(self):
-    trans_list = AccountTransaction.objects.filter(customer__username=self.request.user)
-    self.balance = 0
+def balance(user):
+    trans_list = AccountTransaction.objects.filter(customer__username=user)
+    balance = 0
     for trans in trans_list:
         if trans.trans_type == 'Credit':
-            self.balance += trans.trans_amount
+            balance += trans.trans_amount
         elif trans.trans_type == 'Debit':
-            self.balance -= trans.trans_amount
-    return self.balance
+            balance -= trans.trans_amount
+    return balance
 
 
 class IndexView(TemplateView):
@@ -39,7 +39,7 @@ class AccountView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['balance'] = balance(self)
+        context['balance'] = balance(self.request.user)
         return context
 
 
@@ -59,7 +59,7 @@ class TransactionCreateView(CreateView):
         trans = form.save(commit=False)  #  half saves it
         trans.customer = self.request.user  #  attaches the user in the DB
         if trans.trans_type == 'Debit':
-            if balance(self) < trans.trans_amount:
+            if balance(self.request.user) < trans.trans_amount:
                 form.add_error('trans_amount', 'Transaction failed: You do not have enough in your account to cover this amount')  # field affected, msg to give
                 return self.form_invalid(form)
         return super().form_valid(form)  #  fully saves and creates the transaction
@@ -74,7 +74,7 @@ class TransferCreateView(CreateView):
         trans = form.save(commit=False)  # this half saves it
         trans.customer = self.request.user  # this attaches the user in the DB
         recipient = User.objects.get(id=trans.trans_note)
-        if balance(self) < trans.trans_amount:
+        if balance(self.request.user) < trans.trans_amount:
             form.add_error('trans_amount', 'Transaction failed: You do not have enough in your account to cover this amount')  # field affected, msg to give
             return self.form_invalid(form)
         AccountTransaction.objects.create(customer=recipient, trans_amount=trans.trans_amount, trans_type='Credit', trans_note='')
